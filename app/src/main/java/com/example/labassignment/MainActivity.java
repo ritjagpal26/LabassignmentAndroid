@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
     LocationRequest locationRequest;
+    List<Favplace> favplaceslist;
 
 
     double latitude, longitude;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                return false;
 //            }
 //        });
-
+        getvaluesfromlist();
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.places_autocomplete_fragment);
         if (autocompleteFragment != null) {
@@ -317,6 +318,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 break;
             case R.id.btn_direction:
+                Intent myintent = getIntent();
+                Favplace favplace =  myintent.getParcelableExtra("favplace");
+//        String sql = "Select * FROM favplaces WHERE id = ?";
+//        mDatabse.execSQL(sql, new Integer[]{favplace.getId()});
+                destLat = favplace.getLat();
+                destLong = favplace.getLong();
                 url = getDirectionUrl(latitude, longitude, destLat, destLong);
                 dataTransfer = new Object[4];
                 dataTransfer[0] = mMap;
@@ -423,25 +430,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
             @Override
             public void onMapLongClick(LatLng latLng) {
+                destLat = latLng.latitude;
+                destLong = latLng.longitude;
                 mMap.addMarker(new MarkerOptions().position(latLng)
                         .title(latLng.toString())
                         .draggable(true));
-
-
-
-                destLat = latLng.latitude;
-                destLong = latLng.longitude;
-
-
             }
-
-
-
-
-
-
         });
     }
 
@@ -511,6 +508,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String sql = "INSERT INTO favplaces (adress, lat ,long)" + "VALUES(?,?,?)";
         mDatabse.execSQL(sql, new String[]{address, lat, lon});
         Toast.makeText(this, "Place Added", Toast.LENGTH_SHORT).show();
+
+
+    }
+    public void getvaluesfromlist(){
+
+
 
 
     }

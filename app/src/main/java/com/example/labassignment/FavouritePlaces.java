@@ -24,7 +24,9 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FavouritePlaces extends AppCompatActivity  {
+
 
     SQLiteDatabase mDatabase;
     List<Favplace> favplaceslist;
@@ -41,12 +43,17 @@ public class FavouritePlaces extends AppCompatActivity  {
         listView = findViewById(R.id.fvPlaces);
         favplaceslist = new ArrayList<>();
         mDatabase = openOrCreateDatabase(MainActivity.DATABASE_NAME, MODE_PRIVATE , null);
-listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final Favdapter favdapter = new Favdapter(this,R.layout.activity_fav_list_layout,favplaceslist, mDatabase);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(FavouritePlaces.this
-                , MainActivity.class);
-        startActivity(intent);
+        final Favplace favplace = favplaceslist.get(position);
+
+        Intent myintent = new Intent(FavouritePlaces.this, MainActivity.class);
+        myintent.putExtra("favplace", favplace);
+        startActivity(myintent);
+
 
 
     }
@@ -64,7 +71,7 @@ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 // set item width
                 openItem.setWidth(170);
                 // set item title
-                openItem.setTitle("Update");
+                openItem.setTitle("Edit");
                 // set item title fontsize
                 openItem.setTitleSize(18);
                 // set item title font color
@@ -90,17 +97,17 @@ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         listView.setMenuCreator(creator);
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+            public boolean onMenuItemClick(final int position, SwipeMenu menu, int index) {
                 switch (index) {
                     case 0:
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FavouritePlaces.this);
                         builder.setTitle("Are you sure?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String sql = "DELETE FROM favplaces WHERE id = ?";
-                                mDatabase.execSQL(sql, new Integer[]{favplace.getId()});
+                                mDatabase.execSQL(sql, new Integer[]{favplaceslist.get(position).getId()});
                                 loadfvplaces();
 
                             }
@@ -136,6 +143,10 @@ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
     private void loadfvplaces() {
+        if(favplaceslist != null)
+        {
+            favplaceslist.clear();
+        }
         String sql = "SELECT * FROM favplaces";
 
         Cursor cursor = mDatabase.rawQuery(sql,null);
