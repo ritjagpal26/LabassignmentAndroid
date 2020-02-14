@@ -43,10 +43,16 @@ public class Favdapter extends ArrayAdapter {
         View v = inflater.inflate(layoutRes,null);
 
         TextView address = v.findViewById(R.id.tvAddress);
+        TextView latitude = v.findViewById(R.id.tvlatitude);
+        TextView longitude = v.findViewById(R.id.tvlongtude);
+
 
 
         final  Favplace favplace = favplaces.get(position);
         address.setText(favplace.getAddress());
+        latitude.setText(String.valueOf(favplace.getLat()));
+        longitude.setText(String.valueOf(favplace.getLong()));
+
 
 
 //

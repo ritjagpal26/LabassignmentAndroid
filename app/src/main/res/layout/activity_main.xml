@@ -13,37 +13,43 @@
         android:layout_height="wrap_content">
 
 
-    <Button
-        android:id="@+id/B_favplaces"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClick"
-        android:text="Fav places" />
+        <Button
+            android:id="@+id/B_favplaces"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="#574F7E"
+            android:onClick="onClick"
+            android:text="Fav places" />
 
-    <Button
-        android:id="@+id/B_Hospital"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="Hospital" />
+        <Button
+            android:id="@+id/B_Hospital"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="#574F7E"
+            android:onClick="onClick"
 
-    <Button
-        android:id="@+id/B_Restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/B_Hospital"
-        android:onClick="onClick"
+            android:text="Hospital"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
 
-        android:text="Restaurant" />
+        <Button
+            android:id="@+id/B_Restaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/B_Hospital"
+            android:backgroundTint="#574F7E"
 
-    <Button
-        android:id="@+id/B_School"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/B_Restaurant"
-        android:onClick="onClick"
-        android:text="School" />
+            android:onClick="onClick"
+            android:text="Restaurant" />
+
+        <Button
+            android:id="@+id/B_School"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/B_Restaurant"
+            android:backgroundTint="#574F7E"
+            android:onClick="onClick"
+            android:text="School" />
         </LinearLayout>
 
     <fragment
@@ -61,14 +67,15 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="11dp"
         tools:context="com.example.kats.mapsinandroid.MapsActivity" />
+
     <Button
         android:id="@+id/btn_direction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/map"
+        android:backgroundTint="@color/quantum_googred"
         android:onClick="onClick"
-        android:text="Get Direction"
-         />
+        android:text="Get Direction" />
 
 
 
