@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
         }
-
+//dhjdhkuhdijdlf
     }
 
     private void createTable(SQLiteDatabase mDatabse) {
