@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String address;
     private final int REQUEST_CODE = 99;
     int PROXIMITY_RADIUS = 10000;
-
+    FavouritePlaces favouritePlaces = new FavouritePlaces();
     SearchView searchView;
     private GoogleApiClient client;
     private Location lastLocation;
@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .tilt(45)
                                 .build();
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                        destLat = latLng.latitude;
+                        destLong = latLng.longitude;
 
                     }
                 }
@@ -318,12 +321,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 break;
             case R.id.btn_direction:
+
+
                 Intent myintent = getIntent();
                 Favplace favplace =  myintent.getParcelableExtra("favplace");
 //        String sql = "Select * FROM favplaces WHERE id = ?";
 //        mDatabse.execSQL(sql, new Integer[]{favplace.getId()});
-                destLat = favplace.getLat();
-                destLong = favplace.getLong();
+                if (favouritePlaces.isselected == true) {
+                    destLat = favplace.getLat();
+                    destLong = favplace.getLong();
+                }
                 url = getDirectionUrl(latitude, longitude, destLat, destLong);
                 dataTransfer = new Object[4];
                 dataTransfer[0] = mMap;

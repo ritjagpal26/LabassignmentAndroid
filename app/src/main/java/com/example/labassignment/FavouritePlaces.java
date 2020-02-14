@@ -32,6 +32,7 @@ public class FavouritePlaces extends AppCompatActivity  {
     List<Favplace> favplaceslist;
     SwipeMenuListView listView;
     Favplace favplace;
+    boolean isselected = false;
     private static final String TAG = "FavouritePlaces";
 
     @Override
@@ -48,6 +49,7 @@ public class FavouritePlaces extends AppCompatActivity  {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        isselected = true;
         final Favplace favplace = favplaceslist.get(position);
 
         Intent myintent = new Intent(FavouritePlaces.this, MainActivity.class);
@@ -101,6 +103,12 @@ public class FavouritePlaces extends AppCompatActivity  {
                 switch (index) {
                     case 0:
 
+
+
+                        Log.d(TAG,"On List View Item Clicked " + index);
+
+                        break;
+                    case 1:
                         AlertDialog.Builder builder = new AlertDialog.Builder(FavouritePlaces.this);
                         builder.setTitle("Are you sure?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -119,11 +127,6 @@ public class FavouritePlaces extends AppCompatActivity  {
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-
-                        Log.d(TAG,"On List View Item Clicked " + index);
-
-                        break;
-                    case 1:
                         Log.d(TAG,"On List View Item Clicked " + index);
 
                         break;
