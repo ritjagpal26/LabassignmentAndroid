@@ -1,3 +1,7 @@
 <resources>
+    <string name="app_name">LabAssignment</string>
+
+    <string name="api_key">AIzaSyB62wouz5mEqEkkDZE5G2iRbkfbifeEMbg</string>
+    <string name="api_key_places">AIzaSyB62wouz5mEqEkkDZE5G2iRbkfbifeEMbg</string>
 
 </resources>

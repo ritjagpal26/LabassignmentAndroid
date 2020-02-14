@@ -14,12 +14,12 @@
 
 
     <Button
-        android:id="@+id/B_Search"
+        android:id="@+id/B_favplaces"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:onClick="onClick"
-        android:text="Search" />
+        android:text="Fav places" />
 
     <Button
         android:id="@+id/B_Hospital"
@@ -62,12 +62,13 @@
         android:layout_marginTop="11dp"
         tools:context="com.example.kats.mapsinandroid.MapsActivity" />
     <Button
-        android:id="@+id/B_favplaces"
+        android:id="@+id/btn_direction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/map"
         android:onClick="onClick"
-        android:text="Fav places" />
+        android:text="Get Direction"
+         />
 
 
 

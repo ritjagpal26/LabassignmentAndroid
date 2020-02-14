@@ -51,10 +51,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
-
+    Favplace favplace;
     public static final String DATABASE_NAME = "mydatabse";
     SQLiteDatabase mDatabse;
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker currentLocationMarker;
 
-   LatLng latLng;
+    LatLng latLng;
     double destLat, destLong;
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
@@ -117,28 +117,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.places_autocomplete_fragment);
-        if(autocompleteFragment != null) {
-            autocompleteFragment.setPlaceFields( Arrays.asList( Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG,Place.Field.ADDRESS,Place.Field.ADDRESS_COMPONENTS));
+        if (autocompleteFragment != null) {
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS));
 
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                                                                @Override
-                                                                public void onPlaceSelected(@NonNull Place place) {
-                                                                    LatLng latLng = place.getLatLng();
-                                                                    if (latLng != null) {
-                                                                        mMap.addMarker(new MarkerOptions().position(latLng)
-                                                                                .title(place.getName())
-                                                                                .snippet(place.getAddress())
-                                                                                .icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_AZURE ) ));
-                                                                        CameraPosition cameraPosition = CameraPosition.builder()
-                                                                                .target( latLng )
-                                                                                .zoom( 15 )
-                                                                                .bearing( 0 )
-                                                                                .tilt( 45 )
-                                                                                .build();
-                                                                        mMap.animateCamera( CameraUpdateFactory.newCameraPosition( cameraPosition ) );
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    LatLng latLng = place.getLatLng();
+                    if (latLng != null) {
+                        mMap.addMarker(new MarkerOptions().position(latLng)
+                                .title(place.getName())
+                                .snippet(place.getAddress())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        CameraPosition cameraPosition = CameraPosition.builder()
+                                .target(latLng)
+                                .zoom(15)
+                                .bearing(0)
+                                .tilt(45)
+                                .build();
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                                                                    }
-                                                                }
+                    }
+                }
 
                 @Override
                 public void onError(@NonNull Status status) {
@@ -148,8 +148,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 //        String apikey =
 
-        if(!Places.isInitialized())
-        {
+        if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.api_key_places));
         }
         PlacesClient placesClient = Places.createClient(this);
@@ -160,11 +159,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         else
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
+
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
     protected synchronized void buildGoogleApiClient() {
 
         //create a GoogleApiClient and connect it
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
 
@@ -188,13 +190,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //remove the marker if already set to some other place
 
-        if(currentLocationMarker != null) {
+        if (currentLocationMarker != null) {
             currentLocationMarker.remove();
         }
 
         //get he lat and lon to set the marker to it
 
-        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         MarkerOptions markerOptions = new MarkerOptions(); //to set properties to that marker
         markerOptions.position(latLng);
@@ -209,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.zoomBy(5));
 
         //stop the location update once it is set
-        if(client!=null) {
+        if (client != null) {
 
             //location set
 
@@ -217,22 +219,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-
-
     }
 
 
-
-
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         Object dataTransfer[] = new Object[2];
         //first object will be mMap , scnd will be url
 
         GetNearByplaces getNearbyPlacesData = new GetNearByplaces();
 
-        switch (v.getId())
-        {
+        switch (v.getId()) {
 //            case R.id.B_Search:
 //            {
 //                EditText tf_location = (EditText) findViewById(R.id.TF_location);
@@ -272,10 +268,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //
 //            break;
 
-            case R.id.B_Hospital :
+            case R.id.B_Hospital:
                 mMap.clear(); //remove all the markers from the map
                 String hospital = "hospital";
-                String url = getUrl(latitude , longitude , hospital);
+                String url = getUrl(latitude, longitude, hospital);
 
 
                 dataTransfer[0] = mMap;
@@ -283,46 +279,54 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 getNearbyPlacesData.execute(dataTransfer);
 
-                Toast.makeText(this , "Showing Nearby Hospitals", Toast.LENGTH_LONG ).show();
+                Toast.makeText(this, "Showing Nearby Hospitals", Toast.LENGTH_LONG).show();
                 break;
 
-            case R.id.B_Restaurant :
+            case R.id.B_Restaurant:
 
                 mMap.clear(); //remove all the markers from the map
                 String restaurant = "restaurant";
-                url = getUrl(latitude , longitude , restaurant);
+                url = getUrl(latitude, longitude, restaurant);
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
 
                 getNearbyPlacesData.execute(dataTransfer);
 
-                Toast.makeText(this , "Showing Nearby Restaurants", Toast.LENGTH_LONG ).show();
+                Toast.makeText(this, "Showing Nearby Restaurants", Toast.LENGTH_LONG).show();
                 break;
 
-            case R.id.B_School :
+            case R.id.B_School:
 
                 mMap.clear(); //remove all the markers from the map
                 String school = "school";
-                url = getUrl(latitude , longitude , school);
+                url = getUrl(latitude, longitude, school);
 
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
 
                 getNearbyPlacesData.execute(dataTransfer);
 
-                Toast.makeText(this , "Showing Nearby Schools", Toast.LENGTH_LONG ).show();
+                Toast.makeText(this, "Showing Nearby Schools", Toast.LENGTH_LONG).show();
                 break;
             case R.id.B_favplaces:
                 //start activity to another activity to seee the list of employee
                 Intent intent = new Intent(MainActivity.this
-                        ,FavouritePlaces.class);
+                        , FavouritePlaces.class);
                 startActivity(intent);
 
                 break;
+            case R.id.btn_direction:
+                url = getDirectionUrl(latitude, longitude, destLat, destLong);
+                dataTransfer = new Object[4];
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                dataTransfer[2] = new LatLng(destLat, destLong);
+                dataTransfer[3] = new LatLng(latitude, longitude);
+                GetDirection getDirectionData = new GetDirection();
+                getDirectionData.execute(dataTransfer);
 
-
-
+                break;
 
 
         }
@@ -342,16 +346,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onProviderDisabled(String provider) {
 
     }
-    private String getUrl(double latitude , double longitude , String nearbyPlace)
-    {
-        StringBuilder googlePlaceUrl = new StringBuilder();
-        googlePlaceUrl.append("location"+"="+latitude+","+longitude);
-        googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type="+nearbyPlace);
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlaceUrl.append("location" + "=" + latitude + "," + longitude);
+        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlaceUrl.append("&type=" + nearbyPlace);
         googlePlaceUrl.append("&sensor=true");
-        googlePlaceUrl.append();
+        googlePlaceUrl.append("&key=" + "AIzaSyB62wouz5mEqEkkDZE5G2iRbkfbifeEMbg");
 
         return googlePlaceUrl.toString();
+    }
+
+    private String getDirectionUrl(double latitude, double longitude, double destlatitude, double destlongituide) {
+        StringBuilder directionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        directionUrl.append("origin=" + latitude + "," + longitude);
+        directionUrl.append("&destination=" + destlatitude + "," + destlongituide);
+        directionUrl.append("&key=" + getString(R.string.api_key_places));
+        return directionUrl.toString();
     }
 
     private void getUserLocation() {
@@ -363,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationRequest.setSmallestDisplacement(10);
         setHomeMarker();
     }
+
     private void setHomeMarker() {
         locationCallback = new LocationCallback() {
             @Override
@@ -386,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -394,12 +408,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                 latLng = marker.getPosition();
+                latLng = marker.getPosition();
+
 
                 address = marker.getTitle();
 
                 System.out.println(address);
-                System.out.println(latLng.latitude + "Longitude"+ latLng.longitude);
+                System.out.println(latLng.latitude + "Longitude" + latLng.longitude);
                 addAddress();
 
                 return false;
@@ -407,21 +422,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         });
 
-        mMap.setOnMapLongClickListener( new GoogleMap.OnMapLongClickListener() {
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                mMap.addMarker(new MarkerOptions().position(latLng)
+                        .title(latLng.toString())
+                        .draggable(true));
+
+
+
                 destLat = latLng.latitude;
                 destLong = latLng.longitude;
-                mMap.addMarker( new MarkerOptions().position( latLng )
-                        .title( "Your Destination" )
-                        .draggable( true )
-                        .snippet( "you are going there" )
-                        .icon( BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE )));
-                addAddress();
+
 
             }
-        } );
+
+
+
+
+
+
+        });
     }
+
     private boolean checkPermission() {
         int permissionState = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
@@ -451,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //use fusedloaction api to get the current location
 
-        if(ContextCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
         }
@@ -461,8 +484,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void createTable(SQLiteDatabase mDatabse) {
 
         String sql = "CREATE TABLE IF NOT EXISTS favplaces(" +
-                "id INTEGER NOT NULL CONSTRAINT fav_pk PRIMARY KEY AUTOINCREMENT, "+
-                "adress VARCHAR(700) NOT NULL, "+
+                "id INTEGER NOT NULL CONSTRAINT fav_pk PRIMARY KEY AUTOINCREMENT, " +
+                "adress VARCHAR(700) NOT NULL, " +
                 "lat DOUBLE NOT NULL, " +
 
                 "long DOUBLE NOT NULL);";
@@ -470,11 +493,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabse.execSQL(sql);
 
     }
+
     private void addAddress() {
 
 
         String lat = String.valueOf(latLng.latitude);
         String lon = String.valueOf(latLng.longitude);
+
+
 
         //using the Calendar object to get the current time
         Calendar calendar = Calendar.getInstance();
@@ -482,15 +508,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String joingiDate = simpleDateFormat.format(calendar.getTime());
 
 
-
-        String sql ="INSERT INTO favplaces (adress, lat ,long)"+ "VALUES(?,?,?)";
-        mDatabse.execSQL(sql, new String[]{address,lat,lon});
+        String sql = "INSERT INTO favplaces (adress, lat ,long)" + "VALUES(?,?,?)";
+        mDatabse.execSQL(sql, new String[]{address, lat, lon});
         Toast.makeText(this, "Place Added", Toast.LENGTH_SHORT).show();
 
 
-
     }
-
 
 
     @Override

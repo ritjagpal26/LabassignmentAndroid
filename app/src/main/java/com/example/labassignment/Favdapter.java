@@ -27,6 +27,7 @@ public class Favdapter extends ArrayAdapter {
         this.favplaces = favplaces;
         this.sqLiteDatabase = sqLiteDatabase;
     }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

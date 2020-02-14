@@ -82,13 +82,6 @@ public class DataParser {
 
         return placesList;
     }
-
-    //call this parse method whenever you create Data Parser
-    //it will parse the JSON data n send it to getPlaces method
-    //getPlaces method takes the JSONArray
-    //will call getPlace method to fetch each element for each place and store it in a list
-    //return the list to parse method
-
     public List<HashMap<String,String>> parse(String jsonData)
     {
         JSONArray jsonArray = null;
@@ -104,4 +97,80 @@ public class DataParser {
 
         return getPlaces(jsonArray);
     }
+    public  String[] parseDirections(String jsondata) {
+
+        JSONArray jsonArray = null;
+        try {
+            JSONObject jsonObject = new JSONObject(jsondata);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return getPaths(jsonArray);
+    }
+
+    private  String[]  getPaths(JSONArray jsonArray){
+        int count = jsonArray.length();
+        String[] polilines = new String[count];
+        for (int i = 0 ; i<count;i++){
+            try {
+                polilines[i] = getPath(jsonArray.getJSONObject(i));
+            }
+            catch(JSONException e){
+                e.printStackTrace();
+            }
+
+        }
+        return polilines;
+    }
+
+    private String getPath(JSONObject jsonObject) {
+        String polyline = "";
+        try {
+            polyline = jsonObject.getJSONObject("polyline").getString("points");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  polyline;
+
+    }
+
+    public  HashMap<String,String> parseDistance(String jsonData){
+        JSONArray jsonArray = null;
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
+        }catch (JSONException e){
+            e.printStackTrace();
+
+
+        }
+        return getDuration(jsonArray);
+    }
+
+    private  HashMap<String,String > getDuration(JSONArray distanceDuration){
+        HashMap<String, String> directionMAp = new HashMap<>();
+        String duration = "";
+        String distance = "";
+        try {
+            duration = distanceDuration.getJSONObject(0).getJSONObject("duration").getString("text");
+            distance = distanceDuration.getJSONObject(0).getJSONObject("distance").getString("text");
+
+            directionMAp.put("duration", duration);
+            directionMAp.put("distance", distance);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return directionMAp;
+
+    }
+    //call this parse method whenever you create Data Parser
+    //it will parse the JSON data n send it to getPlaces method
+    //getPlaces method takes the JSONArray
+    //will call getPlace method to fetch each element for each place and store it in a list
+    //return the list to parse method
+
+
 }
