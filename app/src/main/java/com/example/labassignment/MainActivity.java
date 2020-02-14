@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SearchView;
@@ -50,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker currentLocationMarker;
 
-    LatLng latLng;
+   public LatLng latLng;
     double destLat, destLong;
     private FusedLocationProviderClient fusedLocationProviderClient;
     LocationCallback locationCallback;
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                return false;
 //            }
 //        });
-        getvaluesfromlist();
+//        getvaluesfromlist();
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.places_autocomplete_fragment);
         if (autocompleteFragment != null) {
@@ -327,10 +330,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Favplace favplace =  myintent.getParcelableExtra("favplace");
 //        String sql = "Select * FROM favplaces WHERE id = ?";
 //        mDatabse.execSQL(sql, new Integer[]{favplace.getId()});
-                if (favouritePlaces.isselected == true) {
+
                     destLat = favplace.getLat();
                     destLong = favplace.getLong();
-                }
+                    System.out.println(favplace.getAddress());
+
                 url = getDirectionUrl(latitude, longitude, destLat, destLong);
                 dataTransfer = new Object[4];
                 dataTransfer[0] = mMap;
@@ -395,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
+
                     LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
                     latitude = userLocation.latitude;
@@ -409,6 +414,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     mMap.addMarker(new MarkerOptions().position(userLocation)
                             .title("your location"));
+
+//                    getvaluesfromlist();
                 }
             }
         };
@@ -443,11 +450,60 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 destLat = latLng.latitude;
                 destLong = latLng.longitude;
                 mMap.addMarker(new MarkerOptions().position(latLng)
-                        .title(latLng.toString())
+                        .title(getAddress(latLng))
                         .draggable(true));
             }
         });
+
+
+
+
+
     }
+    private String getAddress(LatLng latLng)
+    {
+        String address = "";
+
+        Geocoder geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
+        try
+        {
+            List<Address> addresses = geocoder.getFromLocation( latLng.latitude, latLng.longitude, 1 );
+            if (addresses != null && addresses.size() > 0)
+            {
+                Log.i("Main Activity", "on Location Result:" + addresses.get(0));
+                if (addresses.get(0).getThoroughfare() != null)
+                {
+                    address += " " + addresses.get(0).getThoroughfare();
+
+                }
+
+
+                if (addresses.get(0).getLocality() != null)
+                {
+                    address += " " + addresses.get(0).getLocality();
+
+                }
+
+                if (addresses.get(0).getAdminArea() != null)
+                {
+                    address += " " + addresses.get(0).getAdminArea();
+                }
+
+
+                Toast.makeText(MainActivity.this, address, Toast.LENGTH_SHORT).show();
+
+
+            }
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return address;
+
+    }
+
 
     private boolean checkPermission() {
         int permissionState = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -518,12 +574,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-    public void getvaluesfromlist(){
+//    public void getvaluesfromlist(){
+//
+//        Intent myintent = getIntent();
+//        Favplace favplace =  myintent.getParcelableExtra("favplace");
+////        String sql = "Select * FROM favplaces WHERE id = ?";
+////        mDatabse.execSQL(sql, new Integer[]{favplace.getId()});
+//
+//            destLat = favplace.getLat();
+//            destLong = favplace.getLong();
+//            System.out.println(favplace.getAddress());
+//            mMap.addMarker(new MarkerOptions()
+//                    .position(new LatLng(favplace.getLat(),favplace.getLong()))
+//                    .title(favplace.getAddress()));
+//
+//        locationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                for (Location location : locationResult.getLocations()) {
+//
+//                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+//
+//                    latitude = userLocation.latitude;
+//                    longitude = userLocation.longitude;
+//
+//                    CameraPosition cameraPosition = CameraPosition.builder()
+//                            .target(userLocation)
+//                            .zoom(15)
+//                            .bearing(0)
+//                            .tilt(45)
+//                            .build();
+//                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                    mMap.addMarker(new MarkerOptions().position(new LatLng(destLat,destLong))
+//                            .title("your location"));
+//                }}
+//
+//
+//    };
+//    }
 
-
-
-
-    }
 
 
     @Override

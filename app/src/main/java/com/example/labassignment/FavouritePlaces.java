@@ -49,12 +49,13 @@ public class FavouritePlaces extends AppCompatActivity  {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        isselected = true;
-        final Favplace favplace = favplaceslist.get(position);
+         Favplace favplace = favplaceslist.get(position);
 
         Intent myintent = new Intent(FavouritePlaces.this, MainActivity.class);
         myintent.putExtra("favplace", favplace);
         startActivity(myintent);
+        isselected = true;
+
 
 
 
